@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma, User } from '@prisma/client';
 import { accounts, users } from 'src/data';
+import { DBService } from 'src/db.service';
 import { v4 as uuid } from "uuid";
 
 @Injectable()
 export class UserService {
+  constructor(private dbService:DBService) {}
 
   createUser(body: {name:string, password:string, pid:string}) {
     const newUser = {
-      id: uuid(),
       name: body.name,
       password: body.password,
       pid: body.pid,
@@ -15,21 +17,16 @@ export class UserService {
       transactions: [],
       servicePayments: []
     }
-    users.push(newUser);
-    return newUser;
+    // users.push(newUser);
+    return this.dbService.user.create({data:body});
   }
 
   getAllUsers() {
-    return users;
+    return this.dbService.user.findMany();
   }
 
-  getUser(uid:string) {
-    return users.find(user => user.id===uid);
-  }
-
-  getUserAccounts(uid:string) {
-    return accounts.filter((acc) => {
-      if(acc.userId===uid) return acc
-    });
+  getUser(id: number): Promise<User> {
+    // return users.find(user => user.id===uid);
+    return this.dbService.user.findUnique({where: {id}})
   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, Get } from '@nestjs/common';
+import { Controller, Post, Body, Param, Get, ParseIntPipe } from '@nestjs/common';
 import { CreateUserDto } from './user.dto';
 import { UserService } from './user.service';
 
@@ -20,16 +20,8 @@ export class UserController {
 
   @Get("/:uid")
   getUser(
-    @Param("uid") uid:string
+    @Param("uid", ParseIntPipe) uid:string
   ) {
-    return this.userService.getUser(uid);
+    return this.userService.getUser(Number(uid));
   }
-
-  @Get("/accounts/:uid")
-  getUserAccounts(
-    @Param("uid") uid: string
-  ) { // get all accounts owned by relevant user
-    return this.userService.getUserAccounts(uid);
-  }
-
 }

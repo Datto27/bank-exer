@@ -65,4 +65,8 @@ export class TransactionService {
     return filteredTransactions;
   }
 
+  removeTransaction(operatorId:string, transactionId:string) {
+    return transactions.filter((tr) => tr.id!==transactionId)
+  }
+
 }

@@ -1,4 +1,4 @@
-import { Controller, Param, Response, Body, Post, Get, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Param, Response, Body, Post, Get, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { Response as ResponseT } from 'express';
 import { TransactionI } from 'src/dataTypes';
 import { CreateTransactionDto } from './transaction.dto';
@@ -30,11 +30,18 @@ export class TransactionController {
     return this.transactionService.findTransactionById(id);
   }
 
-
   @Get("/by-date")
   getTransactionsByDate(
     @Body() {minDate, maxDate}:{minDate:string, maxDate?:string}
   ) {
     return this.transactionService.filterByDate(minDate, maxDate);
+  }
+
+  @Delete("/:operatorId")
+  removeTransaction(
+    @Param("operatorId") operatorId: string,
+    @Body() {transactionId}: {transactionId:string}
+  ) {
+    return this.transactionService.removeTransaction(operatorId, transactionId)
   }
 }
